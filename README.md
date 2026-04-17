@@ -1,16 +1,16 @@
 # dac-skills-marketplace
 
-`dac-skills-marketplace` is a [Claude Code](https://code.claude.com) plugin marketplace that ships skills, commands, agents, and hooks used across DAC Digital's projects. It gives our teams (and anyone else who finds it useful) a single, versioned source of truth for Claude Code extensions — so engineers get the same tooling on every repo, upgrades propagate cleanly, and new plugins roll out through standard pull-request review.
+**An open-source [Claude Code](https://code.claude.com) plugin marketplace from [DAC.digital](https://dac.digital).**
 
-The marketplace is a thin layer of JSON manifests over a `plugins/` directory. Each plugin is self-contained and installable on its own; the marketplace just catalogs them.
+A set of plugins — skills, commands, agents, and hooks — that DAC engineers use day to day, packaged so anyone can install them. Each plugin is self-contained and installable on its own; the marketplace is a thin layer of JSON manifests that catalogs them, versions them, and ships new ones through standard pull-request review.
 
-This project is maintained by **DAC Digital** and released as Open Source under the Apache 2.0 license. It is not a CNCF project; the README follows the CNCF project-template structure for clarity, nothing more.
+Released under Apache 2.0.
 
 ## Plugins
 
-| Plugin | Description |
-|--------|-------------|
-| [vibeguard](plugins/vibeguard/) | Production readiness assessment — security, reliability, data, quality, operations, performance |
+**[VIBEguard](plugins/vibeguard/)** — production readiness assessment for vibe-coded projects. Runs dozens of focused checks across security, reliability, data, quality, operations, and performance, then synthesizes a prioritized report with a go/no-go call. Install with `/plugin install vibeguard@dac-skills-marketplace`, then run `/vibeguard` in any project. Writes output to `vibeguard-reports/` (auto-added to `.gitignore`). See [plugins/vibeguard/SKILL.md](plugins/vibeguard/skills/vibeguard/SKILL.md) for the full skill inventory and execution contract.
+
+More plugins will land here as DAC extracts the tooling we use internally. If you'd like to contribute one, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Getting Started
 
