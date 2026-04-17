@@ -1,0 +1,13 @@
+{
+  "name": "dac-skills-marketplace",
+  "owner": {
+    "name": "DAC Digital"
+  },
+  "plugins": [
+    {
+      "name": "vibeguard",
+      "source": "./plugins/vibeguard",
+      "description": "Production readiness assessment — security, reliability, data, quality, operations, performance"
+    }
+  ]
+}

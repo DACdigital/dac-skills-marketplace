@@ -1,0 +1,8 @@
+{
+  "name": "vibeguard",
+  "description": "Production readiness assessment — security, reliability, data, quality, operations, performance",
+  "version": "1.0.0",
+  "author": {
+    "name": "DAC Digital"
+  }
+}
