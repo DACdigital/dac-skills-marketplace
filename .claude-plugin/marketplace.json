@@ -8,6 +8,11 @@
       "name": "vibeguard",
       "source": "./plugins/vibeguard",
       "description": "Production readiness assessment — security, reliability, data, quality, operations, performance"
+    },
+    {
+      "name": "choreo",
+      "source": "./plugins/choreo",
+      "description": "Coordinate background Claude Code worker sessions: launch them in git worktrees, collect their questions in one Waiting tab, answer and steer them from one pane"
     }
   ]
 }

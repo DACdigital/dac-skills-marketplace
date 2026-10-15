@@ -10,6 +10,8 @@ Released under Apache 2.0.
 
 **[VIBEguard](plugins/vibeguard/)** — production readiness assessment for vibe-coded projects. Runs dozens of focused checks across security, reliability, data, quality, operations, and performance, then synthesizes a prioritized report with a go/no-go call. Install with `/plugin install vibeguard@dac-skills-marketplace`, then run `/vibeguard` in any project. Writes output to `vibeguard-reports/` (auto-added to `.gitignore`). See [plugins/vibeguard/SKILL.md](plugins/vibeguard/skills/vibeguard/SKILL.md) for the full skill inventory and execution contract.
 
+**[choreo](plugins/choreo/)** - run a team of Claude Code sessions from one coordinator session. Each worker gets its own git worktree and branch and reports back with short tagged messages. Their questions land in one Waiting tab, where you answer them. One pane, `/choreo`, also shows the workers, your tracker tasks (Plane, GitHub issues or any command) and your merge or pull requests. Workers never push or post: every outward action comes back to you. Install with `/plugin install choreo@dac-skills-marketplace`, copy `choreo.config.example.json` to `.claude/choreo.json` in your project, then run `/choreo:choreographer` in the coordinator session. See [plugins/choreo/INSTALL.md](plugins/choreo/INSTALL.md) for the full setup and [CONFIG.md](plugins/choreo/CONFIG.md) for the settings.
+
 More plugins will land here as DAC extracts the tooling we use internally. If you'd like to contribute one, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Getting Started
@@ -95,13 +97,20 @@ dac-skills-marketplace/
 ├── .claude-plugin/
 │   └── marketplace.json          # marketplace manifest (name, owner, plugins list)
 └── plugins/
-    └── vibeguard/
+    ├── vibeguard/
+    │   ├── .claude-plugin/
+    │   │   └── plugin.json       # plugin manifest (name, version, author)
+    │   └── skills/
+    │       └── vibeguard/
+    │           ├── SKILL.md      # skill entrypoint with frontmatter
+    │           └── ...           # scout, skills, synthesizer, tools, references
+    └── choreo/
         ├── .claude-plugin/
         │   └── plugin.json       # plugin manifest (name, version, author)
-        └── skills/
-            └── vibeguard/
-                ├── SKILL.md      # skill entrypoint with frontmatter
-                └── ...           # scout, skills, synthesizer, tools, references
+        ├── hooks/                # hooks module (hooks.json, register.tsx) and its tests
+        ├── skills/choreographer/ # coordinator instructions and routines
+        ├── bin/                  # helper scripts and tracker adapters
+        └── INSTALL.md, CONFIG.md, README.md
 ```
 
 ## Communications

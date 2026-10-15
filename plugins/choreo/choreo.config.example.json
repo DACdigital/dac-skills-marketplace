@@ -1,0 +1,63 @@
+{
+  "$doc": "Copy to <project root>/.claude/choreo.json and replace every <...> placeholder. Field reference: CONFIG.md. Keys starting with $ are ignored.",
+
+  "coordinatorName": "Choreographer",
+  "projectRoot": "",
+  "baseBranch": "",
+  "trustWorktrees": true,
+  "scratchDir": "scratchpad",
+
+  "repos": [
+    { "path": ".", "about": "<WHAT THE MAIN REPO HOLDS>" },
+    { "path": "<RELATIVE/PATH/TO/OTHER/REPO>", "about": "<WHAT IT HOLDS>" }
+  ],
+
+  "workerRules": [
+    "<OPTIONAL: A RULE EVERY WORKER MUST FOLLOW, OR DELETE THIS LINE>"
+  ],
+
+  "tracker": {
+    "type": "<none | plane | github | command>",
+
+    "$plane": "used when type is plane",
+    "url": "<https://PLANE.EXAMPLE.COM>",
+    "workspace": "<WORKSPACE_SLUG>",
+    "projectId": "<PROJECT_UUID>",
+    "apiKeyEnv": "PLANE_API_KEY",
+
+    "$github": "used when type is github: issues assigned to you",
+    "githubRepos": ["<OWNER/REPO>"],
+
+    "$command": "used when type is command: any command that prints the JSON of bin/tracker_example.sh",
+    "command": "<SHELL COMMAND>",
+
+    "flow": [
+      {
+        "label": "<OPTIONAL LABEL, e.g. hotfix>",
+        "actions": [
+          { "label": "develop", "kind": "develop", "brief": "a small fix for {key}, no spec. Write a very brief plan first, then implement." }
+        ]
+      },
+      {
+        "states": ["<STATE NAME, e.g. Todo>", "<ANOTHER STATE>"],
+        "actions": [
+          { "label": "spec", "kind": "spec", "brief": "write the spec for {key}." },
+          { "label": "small fix", "kind": "develop", "brief": "a small change, no spec. Confirm it is small first." }
+        ]
+      },
+      {
+        "states": ["<STATE NAME, e.g. In review>"],
+        "actions": [
+          { "label": "review comments", "kind": "comments" }
+        ]
+      }
+    ]
+  },
+
+  "git": {
+    "host": "<none | gitlab | github>",
+    "githubRepos": ["<OWNER/REPO>"],
+    "gitlabUrl": "<https://GITLAB.EXAMPLE.COM>",
+    "gitlabGroup": "<GROUP/PATH>"
+  }
+}
