@@ -156,8 +156,8 @@ git check-ignore -q .claude/worktrees/x || echo ".claude/worktrees/" >> .gitigno
 ```
 
 Show the user the `.gitignore` change. They decide whether to commit it. A worktree of a nested
-repo is a sibling folder `<repo>-<worker name>`. If such folders sit inside `<PROJECT>`, ask the
-user how to ignore them.
+repo goes to `<repo>/.worktrees/<worker name>`. The mod git-excludes that folder in the repo's
+`.git/info/exclude`, so it needs no `.gitignore` line.
 
 ## 5. Set up messaging
 
@@ -184,7 +184,7 @@ What must hold:
    or the user's own `~/.claude/settings.json` can set `crossSessionInbound`. A project file
    cannot. Nothing to do here.
 4. **Start the coordinator from a normal shell.** The plugin stays off in a session whose env holds
-   `CHOREO_WORKER` (set for workers) and in any folder under `.claude/worktrees/`.
+   `CHOREO_WORKER` (set for workers) and in any folder under `.claude/worktrees/` or `.worktrees/`.
 
 Check (after step 6, inside the coordinator session): run `ToolSearch` with
 `select:SendMessage,ListAgents`. Both tools load.

@@ -267,12 +267,12 @@ async function approveMcp($: $, dir: string): Promise<string[]> {
 }
 
 // "." is the project root repo, its worktree under .claude/worktrees/. Any other value is a
-// git repo relative to the root, its worktree a sibling folder <repo>-<name>
+// git repo relative to the root, its worktree under <repo>/.worktrees/, git-excluded there
 function worktreePaths(repo: string, name: string) {
   const r = (repo || '.').replace(/^\.\//, '').replace(/\/+$/, '') || '.'
   if (r.startsWith('/') || r.split('/').includes('..')) throw new Error(`repo must be "." or a path inside ${ROOT}, got ${repo}`)
   if (r === '.') return { repoDir: ROOT, path: `${ROOT}/.claude/worktrees/${name}` }
-  return { repoDir: `${ROOT}/${r}`, path: `${ROOT}/${r}-${name}` }
+  return { repoDir: `${ROOT}/${r}`, path: `${ROOT}/${r}/.worktrees/${name}`, exclude: '/.worktrees/' }
 }
 
 // The scratch folder exists and the project root's git ignores it, through .git/info/exclude
@@ -289,9 +289,16 @@ async function ensureScratch($: $) {
 }
 
 async function worktreeFor($: $, repo: string, name: string, branch: string) {
-  const { repoDir, path } = worktreePaths(repo, name)
+  const { repoDir, path, exclude } = worktreePaths(repo, name)
   const cmd = [
     `cd ${quote(repoDir)}`,
+    // The repo's git ignores its worktree folder, through .git/info/exclude
+    ...(exclude
+      ? [
+          'ex=$(git rev-parse --git-path info/exclude) && mkdir -p "$(dirname "$ex")" &&',
+          `{ grep -qxF ${quote(exclude)} "$ex" 2>/dev/null || echo ${quote(exclude)} >> "$ex"; }`,
+        ]
+      : []),
     'git fetch -q origin',
     `if [ -d ${quote(path)} ]; then exit 0; fi`,
     // The base: the configured branch, else origin/HEAD, else origin/main, else origin/master
@@ -1319,7 +1326,7 @@ async function live($: $, w: Worker) {
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     // Never inside a worker: workers carry CHOREO_WORKER, older ones are known by their worktree folder
-    if (e.cwd.includes('/.claude/worktrees/') || (await $.env.get('CHOREO_WORKER'))) return next(e)
+    if (e.cwd.includes('/.claude/worktrees/') || e.cwd.includes('/.worktrees/') || (await $.env.get('CHOREO_WORKER'))) return next(e)
     await loadConfig($, e.cwd)
     if (!inRoot(e.cwd)) return next(e)
     isOn = true

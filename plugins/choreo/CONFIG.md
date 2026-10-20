@@ -31,10 +31,12 @@ variables.
 `mcp__choreo__launch` takes `repo`:
 
 - `"."`: the worktree goes to `<root>/.claude/worktrees/<name>`.
-- `"a/b"`: a git repo at `<root>/a/b`. Its worktree is the sibling folder `<root>/a/b-<name>`.
+- `"a/b"`: a git repo at `<root>/a/b`. Its worktree goes to `<root>/a/b/.worktrees/<name>`. At
+  the first launch there the mod adds `/.worktrees/` to that repo's `.git/info/exclude`, so the
+  repo needs no `.gitignore` line.
 
 An existing local or remote branch is checked out. Otherwise a new branch starts from the base
-branch. Add `.claude/worktrees/` and the sibling folders to `.gitignore` if git would see them.
+branch. Add `.claude/worktrees/` to the root repo's `.gitignore` if git would see it.
 
 ## tracker
 

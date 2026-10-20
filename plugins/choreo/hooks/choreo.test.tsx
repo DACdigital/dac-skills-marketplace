@@ -189,3 +189,48 @@ test('launch tells the worker where visuals go and git-excludes that folder', as
   // launch starts a roster refresh it does not wait for
   await new Promise(r => (globalThis as unknown as { setTimeout: (f: unknown, ms: number) => void }).setTimeout(r, 50))
 })
+
+test('launch in a nested repo puts the worktree under its .worktrees folder and git-excludes it', async ($, on) => {
+  const runs: string[][] = []
+  on('fs.read', () => ({ value: JSON.stringify({ projectRoot: '/work/proj', scratchDir: '' }) }) as never)
+  on('fs.exists', () => ({ value: true }) as never)
+  mock.store(on)
+  mock.env(on, {})
+  on('tool.register', (_$, e) => ({ value: { tool: `mcp__choreo__${e.name}` } }) as never)
+  on('command.register', (_$, e) => ({ value: { command: e.name } }) as never)
+  on('session.start', (_$, e) => ({ cwd: e.cwd }))
+  on('clock.every', () => ({ deny: 'test: no timer' }))
+  on('ui.status' as any, () => ({ value: undefined }) as any)
+  on('process.run' as any, (_$: any, e: any) => {
+    runs.push(e.argv)
+    return { value: { exitCode: 0, stdout: (e.argv ?? [])[0] === 'claude' && e.argv[1] === '--bg' ? 'started abcdef12' : '[]', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
+  })
+  await $.session.start({ cwd: '/work/proj', surface: 'terminal' } as never)
+  await $.tool.call({ tool: 'mcp__choreo__launch', kind: 'develop', repo: 'workspace/svc', name: 'w1', task: 'Do it.' } as any)
+  const wt = runs.find(a => a[0] === 'bash' && (a[2] ?? '').includes('git worktree add'))?.[2] ?? ''
+  expect(wt).toContain("cd '/work/proj/workspace/svc'")
+  expect(wt).toContain("'/work/proj/workspace/svc/.worktrees/w1'")
+  expect(wt).not.toContain('svc-w1')
+  expect(/info\/exclude/.test(wt) && wt.includes("'/.worktrees/'")).toBe(true)
+  // launch starts a roster refresh it does not wait for
+  await new Promise(r => (globalThis as unknown as { setTimeout: (f: unknown, ms: number) => void }).setTimeout(r, 50))
+})
+
+test('a session inside a nested repo worktree stays off', async ($, on) => {
+  const registered: string[] = []
+  on('fs.read', () => ({ value: JSON.stringify({ projectRoot: '/work/proj' }) }) as never)
+  on('fs.exists', () => ({ value: true }) as never)
+  mock.store(on)
+  mock.env(on, {})
+  on('tool.register', (_$, e) => ({ value: { tool: `mcp__choreo__${e.name}` } }) as never)
+  on('command.register', (_$, e) => {
+    registered.push(e.name)
+    return { value: { command: e.name } } as never
+  })
+  on('session.start', (_$, e) => ({ cwd: e.cwd }))
+  on('clock.every', () => ({ deny: 'test: no timer' }))
+  on('ui.status' as any, () => ({ value: undefined }) as any)
+  on('process.run' as any, () => ({ value: { exitCode: 0, stdout: '[]', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }))
+  await $.session.start({ cwd: '/work/proj/workspace/svc/.worktrees/w1', surface: 'terminal' } as never)
+  expect(registered).toEqual([])
+})
