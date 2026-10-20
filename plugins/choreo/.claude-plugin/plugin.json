@@ -1,0 +1,9 @@
+{
+  "name": "choreo",
+  "description": "Coordinate background Claude Code worker sessions: launch them in git worktrees, collect their questions in one Waiting tab, answer and steer them from one pane",
+  "version": "0.1.0",
+  "author": {
+    "name": "DAC Digital"
+  },
+  "types": "./types/index.d.ts"
+}
